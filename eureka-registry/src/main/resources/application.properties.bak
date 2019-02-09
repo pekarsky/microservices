@@ -1,0 +1,8 @@
+server.port=9099
+server.address=127.0.0.1
+
+eureka.client.register-with-eureka=false
+eureka.client.fetch-registry=false
+
+logging.level.com.netflix.eureka=debug
+logging.level.com.netflix.discovery=debug
