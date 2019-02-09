@@ -2,7 +2,6 @@ package local.bottomline.microservices.gateway;
 
 import com.netflix.appinfo.InstanceInfo;
 import com.netflix.discovery.EurekaClient;
-import com.netflix.discovery.converters.Auto;
 import local.bottomline.microservices.assembler.PaymentAssembler;
 import local.bottomline.microservices.assembler.SiteAssembler;
 import local.bottomline.microservices.dto.PaymentDto;
@@ -11,31 +10,23 @@ import local.bottomline.microservices.entity.Payment;
 import local.bottomline.microservices.entity.Site;
 import local.bottomline.microservices.gateway.entityproxy.PaymentProxy;
 import local.bottomline.microservices.gateway.entityproxy.SiteProxy;
+import local.bottomline.microservices.web.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.jms.support.converter.MessageConverter;
-import org.springframework.jms.support.converter.MessagingMessageConverter;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
-import local.bottomline.microservices.web.exception.EntityNotFoundException;
 
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.ObjectMessage;
-import javax.jms.Session;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.*;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -71,7 +62,6 @@ public class GatewayResource {
     public String healthCheck(){
         return "Gateway OK";
     }
-
 
     @GetMapping("/orchestration/payment/{paymentId}")
     public PaymentDto getPaymentOrchestrated(@PathVariable Long paymentId) {
@@ -112,15 +102,6 @@ public class GatewayResource {
         return result;
     }
 
-    private SiteDto getSiteWithJms(Long siteId) throws JMSException {
-        SiteDto requestSite = new SiteDto();
-        requestSite.setId(siteId);
-        Message jmsResponse = jmsTemplate.sendAndReceive("siteJmsListener", session -> jacksonJmsMessageConverter.toMessage(requestSite, session));
-        SiteDto responseSiteDto = (SiteDto) ((ObjectMessage)jmsResponse).getObject();
-        return responseSiteDto;
-    }
-
-
     @GetMapping("/payment/{paymentId}")
     public Payment getPayment(@PathVariable Long paymentId) {
         return paymentProxy.getPayment(paymentId);
@@ -130,17 +111,6 @@ public class GatewayResource {
     public SiteDto getSite(@PathVariable Long siteId) {
         Site site = siteProxy.getSite(siteId);
         return siteAssembler.toDto(site);
-    }
-
-    public Future<SiteDto> getSiteAsync(Long siteId){
-
-        String siteEndpointUrl = serviceUrlByApplicationName("site-endpoint");
-        Client client = ClientBuilder.newBuilder().build();
-        WebTarget webTarget = client.target(siteEndpointUrl + "/site/" + siteId);
-        Invocation.Builder request = webTarget.request();
-        AsyncInvoker asyncInvoker = request.async();
-        Future<SiteDto> futureResp = asyncInvoker.get(SiteDto.class);
-        return futureResp;
     }
 
     @ExceptionHandler(Exception.class)
@@ -153,6 +123,23 @@ public class GatewayResource {
         }
     }
 
+    private Future<SiteDto> getSiteAsync(Long siteId){
+        String siteEndpointUrl = serviceUrlByApplicationName("site-endpoint");
+        Client client = ClientBuilder.newBuilder().build();
+        WebTarget webTarget = client.target(siteEndpointUrl + "/site/" + siteId);
+        Invocation.Builder request = webTarget.request();
+        AsyncInvoker asyncInvoker = request.async();
+        Future<SiteDto> futureResp = asyncInvoker.get(SiteDto.class);
+        return futureResp;
+    }
+
+    private SiteDto getSiteWithJms(Long siteId) throws JMSException {
+        SiteDto requestSite = new SiteDto();
+        requestSite.setId(siteId);
+        Message jmsResponse = jmsTemplate.sendAndReceive("siteJmsListener", session -> jacksonJmsMessageConverter.toMessage(requestSite, session));
+        SiteDto responseSiteDto = (SiteDto) ((ObjectMessage)jmsResponse).getObject();
+        return responseSiteDto;
+    }
 
     private String serviceUrlByApplicationName(String applicationName) {
         InstanceInfo instance = discoveryClient.getNextServerFromEureka(applicationName, false);
