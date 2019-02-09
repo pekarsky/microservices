@@ -1,5 +1,6 @@
 package local.bottomline.microservices.gateway;
 
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jms.DefaultJmsListenerContainerFactoryConfigurer;
@@ -13,6 +14,7 @@ import org.springframework.jms.support.converter.MessageConverter;
 import org.springframework.jms.support.converter.MessageType;
 
 import javax.jms.ConnectionFactory;
+import java.util.Arrays;
 
 @SpringBootApplication(scanBasePackages = "local.bottomline.microservices")
 @EnableEurekaClient
@@ -35,6 +37,13 @@ public class GatewayApplication {
         converter.setTypeIdPropertyName("_type");
         return converter;
     }
+
+//    @Bean
+//    public ActiveMQConnectionFactory activeMQConnectionFactory() {
+//        ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory("your broker URL");
+//        factory.setTrustedPackages(Arrays.asList("local.bottomline.microservices.dto"));
+//        return factory;
+//    }
 
 
     public static void main(String[] args) {

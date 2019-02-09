@@ -10,13 +10,6 @@
     <name>gateway</name>
     <description>API gateway (Zuul)</description>
 
-    <!--<parent>-->
-        <!--<groupId>org.springframework.boot</groupId>-->
-        <!--<artifactId>spring-boot-starter-parent</artifactId>-->
-        <!--&lt;!&ndash;<version>2.0.4.RELEASE</version>&ndash;&gt;-->
-        <!--<version>RELEASE</version>-->
-        <!--<relativePath/> &lt;!&ndash; lookup parent from repository &ndash;&gt;-->
-    <!--</parent>-->
     <parent>
         <groupId>local.bottomline.microservices</groupId>
         <artifactId>example</artifactId>
@@ -28,18 +21,14 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>1.8</java.version>
-        <spring-cloud.version>Finchley.SR1</spring-cloud.version>
-
-
-
-
-        <!--<javaee-api-version>8.0</javaee-api-version>-->
+        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-netflix-zuul</artifactId>
+            <version>2.1.0.RELEASE</version>
         </dependency>
         <dependency>
             <groupId>javax</groupId>
@@ -76,20 +65,12 @@
             <artifactId>jersey-hk2</artifactId>
             <version>2.26</version>
         </dependency>
+
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
             <artifactId>resteasy-client</artifactId>
             <version>3.1.0.Final</version>
-            <!--<exclusions>-->
-                <!--&lt;!&ndash;<exclusion>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<groupId>org.slf4j</groupId>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<artifactId>slf4j-api</artifactId>&ndash;&gt;-->
-                <!--&lt;!&ndash;</exclusion>&ndash;&gt;-->
-                <!--&lt;!&ndash;<exclusion>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<groupId>org.slf4j</groupId>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<artifactId>slf4j-simple</artifactId>&ndash;&gt;-->
-                <!--&lt;!&ndash;</exclusion>&ndash;&gt;-->
-            <!--</exclusions>-->
+
 
         </dependency>
         <dependency>
@@ -97,37 +78,7 @@
             <artifactId>resteasy-jackson2-provider</artifactId>
             <version>3.1.0.Final</version>
         </dependency>
-        <!--<dependency>-->
-            <!--<groupId>org.jboss.resteasy</groupId>-->
-            <!--<artifactId>resteasy-multipart-provider</artifactId>-->
-            <!--<version>3.1.0.Final</version>-->
-        <!--</dependency>-->
-        <!--org.glassfish.jersey.core:jersey-client-->
 
-        <!--org.glassfish.jersey.core:jersey-client-->
-
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.boot</groupId>-->
-            <!--<artifactId>spring-boot-starter-test</artifactId>-->
-            <!--<exclusions>-->
-                <!--<exclusion>-->
-                    <!--<groupId>ch.qos.logback.logback-classic</groupId>-->
-                    <!--<artifactId>logback-classic</artifactId>-->
-                <!--</exclusion>-->
-            <!--</exclusions>-->
-            <!--<scope>test</scope>-->
-        <!--</dependency>-->
-
-        <!--</dependency>-->
-
-        <!--<dependency>-->
-            <!--<groupId>org.springframework.cloud</groupId>-->
-            <!--<artifactId>spring-cloud-starter-eureka</artifactId>-->
-            <!--<scope>import</scope>-->
-            <!--<type>pom</type>-->
-            <!--<version>RELEASE</version>-->
-        <!--</dependency>-->
         <dependency>
             <groupId>local.bottomline.microservices</groupId>
             <artifactId>entity</artifactId>
@@ -171,6 +122,13 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-broker</artifactId>
+            <version>5.14.5</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-context -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-context</artifactId>
+            <version>2.1.0.RELEASE</version>
         </dependency>
 
     </dependencies>
